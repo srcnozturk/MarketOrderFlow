@@ -18,6 +18,7 @@ static class Program
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
         builder.Logging.AddConsole();
+        AddConfigurations(builder);
         AddServices(builder);
         WebApplication app = builder.Build();
         SetApp(app);
@@ -46,6 +47,17 @@ static class Program
         options.UseSqlServer(configuration.GetConnectionString("MarketOrderFlow-DB"));
         options.LogTo(Console.WriteLine, LogLevel.Information); //TODO release modunda loglamayý yapmamalý
         options.EnableSensitiveDataLogging(); //TODO release modunda olmamalý
+    }
+    private static void AddConfigurations(WebApplicationBuilder builder)
+    {
+        builder
+            .Configuration
+            .GetSection(nameof(MarketOrderFlowConfiguration.Authentication))
+            .Bind(MarketOrderFlowConfiguration.Authentication);
+
+        builder.Configuration
+            .GetSection("Authentication:Schemes:Bearer")
+            .Bind(MarketOrderFlowConfiguration.Authentication);
     }
     private static void ConfigureJwtBearerOptions(JwtBearerOptions options)
     {
