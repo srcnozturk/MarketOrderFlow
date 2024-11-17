@@ -1,15 +1,8 @@
-
 using MarketOrderFlow.API;
 using MarketOrderFlow.API.Endpoints;
-using MarketOrderFlow.API.Utility;
 using MarketOrderFlow.Infrastructure;
-using MarketOrderFlow.Infrastructure.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using System.Text.Json.Serialization;
 
 static class Program
@@ -39,6 +32,7 @@ static class Program
       .AddErrorDescriber<MarketFlowIdentityErrorDescriber>()
       .AddEntityFrameworkStores<ApplicationDbContext>()
       .AddDefaultTokenProviders();
+        builder.Services.AddAPIServices();
 
     }
     private static void ConfigureDBContextOptions(IServiceProvider serviceProvider, DbContextOptionsBuilder options)
@@ -91,7 +85,6 @@ static class Program
     private static void SetApp(WebApplication app)
     {
         app.UseAuthentication();
-        //app.UseCors();
 
         if (app.Environment.IsDevelopment())
         {
@@ -105,6 +98,9 @@ static class Program
     private static void MapGroups(WebApplication app)
     {
         app.MapGroup("/auth").MapAuthApi().WithTags("Authentication & Authorization Management API");
+        app.MapGroup("/logistic").MapLogisticCenter().WithTags("Logistic Center Management API");
+        app.MapGroup("/market").MapMarket().WithTags("Market Management API");
+        app.MapGroup("/product").MapProduct().WithTags("Product Management API");
     }
     private static void ConfigureJSONOptions(Microsoft.AspNetCore.Http.Json.JsonOptions o) =>
        o.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;

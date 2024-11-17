@@ -1,24 +1,36 @@
-﻿namespace MarketOrderFlow.Domain;
+﻿using MarketOrderFlow.Domain.Concracts;
+
+namespace MarketOrderFlow.Domain;
 
 /// <summary>
 /// Entity
 /// Ürün 
 /// </summary>
-public class Product
+public class Product : IProduct
 {
-    public int Id { get; private set; }
+    public long Id { get; private set; }
     public string Name { get; private set; }
-    public decimal Price { get; private set; }
-
+    public int Quantity { get; private set; }
+    public int Barcode { get; private set; }
     // Ürün hangi lojistik merkezinde stoklanıyor
-    public int LogisticsCenterId { get; private set; }
-    public LogisticsCenter LogisticsCenter { get; private set; }
+    public ILogisticCenter LogisticCenter { get; }
 
     // Constructor
-    public Product(string name, decimal price, int logisticsCenterId)
+    public Product(string name, int quantity,int barcode,ILogisticCenter logisticCenter)
     {
         Name = name;
-        Price = price;
-        LogisticsCenterId = logisticsCenterId;
+        Quantity = quantity;
+        Barcode=barcode;
+        LogisticCenter = logisticCenter;
+    }
+    public static async Task<IProduct> New(
+           string name,
+           int quantity,
+           int barcode,
+           ILogisticCenter logisticCenter)
+    {
+        Product product = new(
+            name, quantity, barcode, logisticCenter);
+        return product;
     }
 }

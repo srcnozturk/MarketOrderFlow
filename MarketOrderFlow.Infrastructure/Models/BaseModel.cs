@@ -3,8 +3,7 @@
 public class BaseModel
 {
     public long Id { get; set; }
-    public required Guid GlobalId { get; set; }
-    public string? Identifier { get; set; }
+    public Guid GlobalId { get; set; } = Guid.NewGuid();
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset? UpdatedAt { get; set; }
     public bool IsDeleted { get; set; }

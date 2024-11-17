@@ -1,21 +1,4 @@
-﻿using MarketOrderFlow.API.Extensions;
-using MarketOrderFlow.API.Features.Auth.Commands;
-using MarketOrderFlow.API.Features.Auth.Queries;
-using MarketOrderFlow.API.Properties;
-using MarketOrderFlow.API.Utility;
-using MarketOrderFlow.Infrastructure.Models;
-using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-
-namespace MarketOrderFlow.API.Endpoints;
+﻿namespace MarketOrderFlow.API.Endpoints;
 
 static class AuthEndpoints
 {

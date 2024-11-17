@@ -1,37 +1,44 @@
-﻿namespace MarketOrderFlow.Domain;
+﻿using MarketOrderFlow.Domain.Concracts;
+
+namespace MarketOrderFlow.Domain;
 
 /// <summary>
 /// Aggregate Root
 /// Sipariş
 /// </summary>
-public class Order
+public class Order : IOrder
 {
-    public int Id { get; private set; }
+    public long? Id { get; set; }
+    public string Name { get; set; }
     public DateTime OrderDate { get; private set; }
-    public int MarketId { get; private set; }
-    public Market Market { get; private set; }
+    public IMarket Market { get; private set; }
 
     // Sipariş edilen ürünlerin listesi
     public ICollection<OrderItem> OrderItems { get; private set; } = new List<OrderItem>();
 
     // Constructor
-    public Order(int marketId)
+    public Order(long? id,string name,DateTime orderdate,IMarket market)
     {
-        MarketId = marketId;
+        Id = id;
+        Name = name;
         OrderDate = DateTime.UtcNow;
+        Market = market;
     }
 
-    // Siparişe ürün ekleyebilmek için bir metod
+    public static async Task<IOrder> New(
+           long? id,
+           string name,
+           DateTime orderDate,
+           IMarket market = null)
+    {
+        Order order = new(
+            id, name, orderDate, market);
+        return order;
+    }
     public void AddOrderItem(Product product, int quantity)
     {
         var orderItem = new OrderItem(product, quantity);
         OrderItems.Add(orderItem);
     }
-    //public void ApproveOrder(int quantity)
-    //{
-    //    if (quantity < SuggestedQuantity)
-    //        throw new InvalidOperationException("Approved quantity cannot be lower than the suggested quantity.");
-
-    //    ApprovedQuantity = quantity;
-    //}
 }
+

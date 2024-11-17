@@ -1,27 +1,37 @@
-﻿namespace MarketOrderFlow.Domain;
+﻿using MarketOrderFlow.Domain.Concracts;
+
+namespace MarketOrderFlow.Domain;
 
 /// <summary>
 /// Entity
 /// Market sınıfı
 /// </summary>
-public sealed class Market 
+public class Market : IMarket
 {
-    public int Id { get; private set; }
+    public long Id { get; private set; }
     public string Name { get; private set; }
 
     // Market'in bağlı olduğu lojistik merkezinin bilgisi
-    public int LogisticsCenterId { get; private set; }
-    public LogisticsCenter LogisticsCenter { get; private set; }
+    public ILogisticCenter LogisticsCenter { get; private set; }
 
     // Market'e ait siparişleri tutar
     public ICollection<Order> Orders { get; private set; } = new List<Order>();
 
     // Constructor
-    public Market(string name, int logisticsCenterId)
+    public Market(string name, ILogisticCenter logisticsCenter)
     {
         Name = name;
-        LogisticsCenterId = logisticsCenterId;
+        LogisticsCenter = logisticsCenter;
     }
+    public static async Task<IMarket> New(
+           string name,
+           ILogisticCenter logisticCenter)
+    {
+        Market market = new(
+            name, logisticCenter);
+        return market;
+    }
+   
 
     //public void PlaceOrder(int productCode, OrderQuantity orderQuantity)
     //{
