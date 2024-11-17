@@ -4,6 +4,7 @@ using MarketOrderFlow.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MarketOrderFlow.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241117161609_init2")]
+    partial class init2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,6 +114,9 @@ namespace MarketOrderFlow.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<long?>("OrderModelId")
+                        .HasColumnType("bigint");
+
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
@@ -124,6 +130,8 @@ namespace MarketOrderFlow.Infrastructure.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderModelId");
 
                     b.HasIndex("ProductId1");
 
@@ -155,9 +163,6 @@ namespace MarketOrderFlow.Infrastructure.Migrations
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("SuggestedQuantity")
-                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
@@ -196,9 +201,6 @@ namespace MarketOrderFlow.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("OrderModelId")
-                        .HasColumnType("bigint");
-
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
@@ -208,8 +210,6 @@ namespace MarketOrderFlow.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("LogisticsCenterId");
-
-                    b.HasIndex("OrderModelId");
 
                     b.ToTable("Products");
                 });
@@ -433,6 +433,10 @@ namespace MarketOrderFlow.Infrastructure.Migrations
 
             modelBuilder.Entity("MarketOrderFlow.Infrastructure.Models.OrderItemModel", b =>
                 {
+                    b.HasOne("MarketOrderFlow.Infrastructure.Models.OrderModel", null)
+                        .WithMany("OrderItems")
+                        .HasForeignKey("OrderModelId");
+
                     b.HasOne("MarketOrderFlow.Infrastructure.Models.ProductModel", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId1")
@@ -460,10 +464,6 @@ namespace MarketOrderFlow.Infrastructure.Migrations
                         .HasForeignKey("LogisticsCenterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("MarketOrderFlow.Infrastructure.Models.OrderModel", null)
-                        .WithMany("Products")
-                        .HasForeignKey("OrderModelId");
 
                     b.Navigation("LogisticsCenter");
                 });
@@ -526,7 +526,7 @@ namespace MarketOrderFlow.Infrastructure.Migrations
 
             modelBuilder.Entity("MarketOrderFlow.Infrastructure.Models.OrderModel", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("OrderItems");
                 });
 #pragma warning restore 612, 618
         }

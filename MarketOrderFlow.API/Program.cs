@@ -1,6 +1,7 @@
+using Hangfire;
 using MarketOrderFlow.API;
 using MarketOrderFlow.API.Endpoints;
-using MarketOrderFlow.Infrastructure;
+using MarketOrderFlow.Application;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text.Json.Serialization;
@@ -15,6 +16,14 @@ static class Program
         AddServices(builder);
         WebApplication app = builder.Build();
         SetApp(app);
+        app.Lifetime.ApplicationStarted.Register(() =>
+        {
+            RecurringJob.AddOrUpdate<OrderService>(
+                "GenerateDailyOrders",           
+                service => service.GenerateDailyOrders(), // Çalýþtýrýlacak metot
+                Cron.Daily);                      // Her gün çalýþacak þekilde zamanla
+        });
+        app.UseHangfireDashboard("/hangfire");
         app.Run();
     }
     private static void AddServices(WebApplicationBuilder builder)
@@ -34,14 +43,20 @@ static class Program
       .AddDefaultTokenProviders();
         builder.Services.AddAPIServices();
 
+        var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
+
+        // Hangfire'ý Redis ile kaydet
+        builder.Services.AddHangfireWithRedis(redisConnectionString);
+
     }
     private static void ConfigureDBContextOptions(IServiceProvider serviceProvider, DbContextOptionsBuilder options)
     {
         IConfiguration? configuration = serviceProvider.GetService<IConfiguration>() ?? throw new ApplicationException();
         options.UseSqlServer(configuration.GetConnectionString("MarketOrderFlow-DB"));
         options.LogTo(Console.WriteLine, LogLevel.Information); //TODO release modunda loglamayý yapmamalý
-        options.EnableSensitiveDataLogging(); //TODO release modunda olmamalý
+        options.EnableSensitiveDataLogging();
     }
+
     private static void AddConfigurations(WebApplicationBuilder builder)
     {
         builder
@@ -101,6 +116,7 @@ static class Program
         app.MapGroup("/logistic").MapLogisticCenter().WithTags("Logistic Center Management API");
         app.MapGroup("/market").MapMarket().WithTags("Market Management API");
         app.MapGroup("/product").MapProduct().WithTags("Product Management API");
+        app.MapGroup("/order").MapOrder().WithTags("Order Management API");
     }
     private static void ConfigureJSONOptions(Microsoft.AspNetCore.Http.Json.JsonOptions o) =>
        o.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;

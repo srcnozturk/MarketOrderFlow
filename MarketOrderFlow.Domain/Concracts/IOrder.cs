@@ -2,8 +2,9 @@
 
 public interface IOrder
 {
-    long? Id { get; }
-    string Name { get; }
+    long Id { get; }
     IMarket Market { get; }
-    DateTime OrderDate { get; }
+    IProduct Product { get; }
+    int SuggestedQuantity { get; }
+    int? ConfirmedQuantity { get; }
 }

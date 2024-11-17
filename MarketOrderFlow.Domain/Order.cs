@@ -8,37 +8,29 @@ namespace MarketOrderFlow.Domain;
 /// </summary>
 public class Order : IOrder
 {
-    public long? Id { get; set; }
-    public string Name { get; set; }
-    public DateTime OrderDate { get; private set; }
+    public long Id { get; private set; }
     public IMarket Market { get; private set; }
+    public IProduct Product { get; private set; }
+    public int SuggestedQuantity { get; private set; }
+    public int? ConfirmedQuantity { get; private set; }
 
-    // Sipariş edilen ürünlerin listesi
-    public ICollection<OrderItem> OrderItems { get; private set; } = new List<OrderItem>();
 
-    // Constructor
-    public Order(long? id,string name,DateTime orderdate,IMarket market)
+    public static Order Create(IMarket market, IProduct product, int suggestedQuantity)
     {
-        Id = id;
-        Name = name;
-        OrderDate = DateTime.UtcNow;
-        Market = market;
+        return new Order
+        {
+            Market = market,
+            Product = product,
+            SuggestedQuantity = suggestedQuantity
+        };
     }
 
-    public static async Task<IOrder> New(
-           long? id,
-           string name,
-           DateTime orderDate,
-           IMarket market = null)
+    public void Confirm(int quantity)
     {
-        Order order = new(
-            id, name, orderDate, market);
-        return order;
-    }
-    public void AddOrderItem(Product product, int quantity)
-    {
-        var orderItem = new OrderItem(product, quantity);
-        OrderItems.Add(orderItem);
+        if (quantity < SuggestedQuantity)
+            throw new InvalidOperationException("Confirmed quantity cannot be less than the suggested quantity.");
+
+        ConfirmedQuantity = quantity;
     }
 }
 

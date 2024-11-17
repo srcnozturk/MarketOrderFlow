@@ -1,4 +1,6 @@
-﻿using MarketOrderFlow.Infrastructure.Mappings;
+﻿using MarketOrderFlow.Application.Concracts;
+using MarketOrderFlow.Application;
+using MarketOrderFlow.Infrastructure.Mappings;
 using System.Reflection;
 
 namespace MarketOrderFlow.API;
@@ -10,7 +12,7 @@ static class ServiceRegistrations
     {
         services.AddMapsters();
         services.AddCQRSRegister(Assembly.GetExecutingAssembly());
-
+        services.AddScoped<IOrderService, OrderService>();
         return services;
     }
 }
