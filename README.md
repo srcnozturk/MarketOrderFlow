@@ -1,14 +1,14 @@
 # MarketOrderFlow
 **Kullanılan Teknolojiler**
-**.NET Core 8:** Uygulama, modern web uygulamaları için .NET Core 8 kullanılarak geliştirilmiştir.
-**Minimal API:** API geliştirme için Minimal API yapısı tercih edilmiştir.
+***.NET Core 8:** Uygulama, modern web uygulamaları için .NET Core 8 kullanılarak geliştirilmiştir.
+*Minimal API: API geliştirme için Minimal API yapısı tercih edilmiştir.
 **JWT (JSON Web Token):** Kullanıcı kimlik doğrulama için JWT kullanılır.
 **Hangfire:** Arka planda zamanlanmış görevlerin yönetilmesi için Hangfire kullanılmıştır.
 **Serilog:** Loglama işlemleri için Serilog entegrasyonu yapılmıştır.
 **MediatR:** API katmanında MediatR design pattern kullanılmıştır.
 **Domain-Driven Design (DDD):** Domain katmanı DDD prensiplerine göre tasarlanmıştır.
 
-# Mimariler ve Desenler
+### Mimariler ve Desenler
 1. Minimal API
 API, basit ve hızlı geliştirme için Minimal API yapısı kullanılarak oluşturulmuştur. Bu, daha az kodla API endpoint'lerini tanımlamaya imkân tanır.
 
