@@ -5,6 +5,7 @@ using MarketOrderFlow.Application;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Serilog;
 using System.Text.Json.Serialization;
 
 static class Program
@@ -47,6 +48,19 @@ static class Program
 
         var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
         builder.Services.AddAuthorization(ConfigureAuthorizationOptions);
+
+        var logPath = Path.Combine(Directory.GetCurrentDirectory(), "Logs", "log-.txt");
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.Seq("http://host.docker.internal:5341")
+            .WriteTo.File(
+            logPath,
+            rollingInterval: RollingInterval.Day, // Her gün için ayrý dosya
+            outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+            .CreateLogger();
+
+        builder.Host.UseSerilog();
+
         // Hangfire'ý Redis ile kaydet
         builder.Services.AddHangfireWithRedis(redisConnectionString);
 

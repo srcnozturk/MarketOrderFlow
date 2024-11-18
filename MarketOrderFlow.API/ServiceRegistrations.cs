@@ -2,6 +2,7 @@
 using MarketOrderFlow.Application;
 using MarketOrderFlow.Infrastructure.Mappings;
 using System.Reflection;
+using MarketOrderFlow.Domain.Concracts;
 
 namespace MarketOrderFlow.API;
 
@@ -13,6 +14,7 @@ static class ServiceRegistrations
         services.AddMapsters();
         services.AddCQRSRegister(Assembly.GetExecutingAssembly());
         services.AddScoped<IOrderService, OrderService>();
+        services.AddScoped(typeof(IAppLogger<>), typeof(SerilogLogger<>));
         return services;
     }
 }
