@@ -7,6 +7,6 @@ public class ListLogisticCenterQueryHandler(ApplicationDbContext db)
 {
     public async Task<LogisticsCenterModel[]> Handle(ListLogisticCenterQuery request, CancellationToken cancellationToken)
     {
-        return await db.LogisticsCenters.ToArrayAsync();
+        return await db.LogisticsCenters.Where(mp => mp.IsDeleted != true).ToArrayAsync();
     }
 }

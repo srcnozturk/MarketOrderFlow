@@ -7,6 +7,6 @@ public class ListMarketsQueryHandler(ApplicationDbContext db)
 {
     public async Task<MarketModel[]> Handle(ListMarketsQuery query, CancellationToken cancellationToken)
     {
-        return await db.Markets.ToArrayAsync();
+        return await db.Markets.Where(mp => mp.IsDeleted != true).ToArrayAsync();
     }
 }

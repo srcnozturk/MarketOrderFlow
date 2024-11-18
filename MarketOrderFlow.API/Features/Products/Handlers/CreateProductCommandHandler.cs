@@ -11,7 +11,7 @@ public class CreateProductCommandHandler(ApplicationDbContext db) : IRequestHand
         if (logisticCenterModel is null) return null;
         var logisticCenterDomain = logisticCenterModel.Adapt<ILogisticCenter>();
 
-        var product = await Product.New(cmd.Name, cmd.Quantity, cmd.Barcode, logisticCenterDomain);
+        var product = await Product.New(cmd.Name, cmd.StockQuantity, cmd.Barcode, logisticCenterDomain);
         var productModel=product.Adapt<ProductModel>();
         productModel.LogisticsCenter = logisticCenterModel;
 

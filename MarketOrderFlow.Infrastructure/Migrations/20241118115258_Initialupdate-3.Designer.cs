@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MarketOrderFlow.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241115125453_initdb")]
-    partial class initdb
+    [Migration("20241118115258_Initialupdate-3")]
+    partial class Initialupdate3
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,9 +41,6 @@ namespace MarketOrderFlow.Infrastructure.Migrations
 
                     b.Property<Guid>("GlobalId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Identifier")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -77,9 +74,6 @@ namespace MarketOrderFlow.Infrastructure.Migrations
                     b.Property<Guid>("GlobalId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Identifier")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -100,53 +94,6 @@ namespace MarketOrderFlow.Infrastructure.Migrations
                     b.ToTable("Markets");
                 });
 
-            modelBuilder.Entity("MarketOrderFlow.Infrastructure.Models.OrderItemModel", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<DateTimeOffset?>("DeletedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<Guid>("GlobalId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Identifier")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<long?>("OrderModelId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<long>("ProductId1")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<DateTimeOffset?>("UpdatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderModelId");
-
-                    b.HasIndex("ProductId1");
-
-                    b.ToTable("OrderItems");
-                });
-
             modelBuilder.Entity("MarketOrderFlow.Infrastructure.Models.OrderModel", b =>
                 {
                     b.Property<long>("Id")
@@ -164,9 +111,6 @@ namespace MarketOrderFlow.Infrastructure.Migrations
                     b.Property<Guid>("GlobalId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Identifier")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -175,6 +119,9 @@ namespace MarketOrderFlow.Infrastructure.Migrations
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("SuggestedQuantity")
+                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
@@ -203,9 +150,6 @@ namespace MarketOrderFlow.Infrastructure.Migrations
                     b.Property<Guid>("GlobalId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Identifier")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -216,8 +160,8 @@ namespace MarketOrderFlow.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("StockQuantity")
+                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
@@ -300,6 +244,24 @@ namespace MarketOrderFlow.Infrastructure.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("MarketProductStock", b =>
+                {
+                    b.Property<long>("MarketId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("StockQuantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("MarketId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("MarketProductStock");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -435,6 +397,21 @@ namespace MarketOrderFlow.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ProductToOrder", b =>
+                {
+                    b.Property<long>("OrdersId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ProductsId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("OrdersId", "ProductsId");
+
+                    b.HasIndex("ProductsId");
+
+                    b.ToTable("ProductToOrder");
+                });
+
             modelBuilder.Entity("MarketOrderFlow.Infrastructure.Models.MarketModel", b =>
                 {
                     b.HasOne("MarketOrderFlow.Infrastructure.Models.LogisticsCenterModel", "LogisticsCenter")
@@ -444,21 +421,6 @@ namespace MarketOrderFlow.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("LogisticsCenter");
-                });
-
-            modelBuilder.Entity("MarketOrderFlow.Infrastructure.Models.OrderItemModel", b =>
-                {
-                    b.HasOne("MarketOrderFlow.Infrastructure.Models.OrderModel", null)
-                        .WithMany("OrderItems")
-                        .HasForeignKey("OrderModelId");
-
-                    b.HasOne("MarketOrderFlow.Infrastructure.Models.ProductModel", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("MarketOrderFlow.Infrastructure.Models.OrderModel", b =>
@@ -481,6 +443,21 @@ namespace MarketOrderFlow.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("LogisticsCenter");
+                });
+
+            modelBuilder.Entity("MarketProductStock", b =>
+                {
+                    b.HasOne("MarketOrderFlow.Infrastructure.Models.MarketModel", null)
+                        .WithMany()
+                        .HasForeignKey("MarketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MarketOrderFlow.Infrastructure.Models.ProductModel", null)
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -534,14 +511,24 @@ namespace MarketOrderFlow.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ProductToOrder", b =>
+                {
+                    b.HasOne("MarketOrderFlow.Infrastructure.Models.OrderModel", null)
+                        .WithMany()
+                        .HasForeignKey("OrdersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MarketOrderFlow.Infrastructure.Models.ProductModel", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("MarketOrderFlow.Infrastructure.Models.LogisticsCenterModel", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("MarketOrderFlow.Infrastructure.Models.OrderModel", b =>
-                {
-                    b.Navigation("OrderItems");
                 });
 #pragma warning restore 612, 618
         }

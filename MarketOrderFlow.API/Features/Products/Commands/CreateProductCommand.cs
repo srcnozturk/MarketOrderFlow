@@ -2,6 +2,6 @@
 
 namespace MarketOrderFlow.API.Features.Products.Commands;
 
-public readonly record struct CreateProductCommand(string Name,int Quantity,int Barcode,CreateLogisticCenterCommand CreateLogisticCenter): IRequest<Result>;
+public readonly record struct CreateProductCommand(string Name,int StockQuantity, int Barcode,CreateLogisticCenterCommand CreateLogisticCenter): IRequest<Result>;
 
 

@@ -4,6 +4,7 @@ using MarketOrderFlow.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MarketOrderFlow.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241118120153_Initialupdate-4")]
+    partial class Initialupdate4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -92,6 +95,9 @@ namespace MarketOrderFlow.Infrastructure.Migrations
                     b.Property<long>("LogisticsCenterId")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("MarketProductStockModelId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -102,6 +108,8 @@ namespace MarketOrderFlow.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("LogisticsCenterId");
+
+                    b.HasIndex("MarketProductStockModelId");
 
                     b.ToTable("Markets");
                 });
@@ -126,12 +134,6 @@ namespace MarketOrderFlow.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<long>("MarketId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("ProductId")
-                        .HasColumnType("bigint");
-
                     b.Property<int>("StockQuantity")
                         .HasColumnType("int");
 
@@ -139,10 +141,6 @@ namespace MarketOrderFlow.Infrastructure.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("MarketId");
-
-                    b.HasIndex("ProductId");
 
                     b.ToTable("MarketProductStocks");
                 });
@@ -209,6 +207,9 @@ namespace MarketOrderFlow.Infrastructure.Migrations
                     b.Property<long>("LogisticsCenterId")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("MarketProductStockModelId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -222,6 +223,8 @@ namespace MarketOrderFlow.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("LogisticsCenterId");
+
+                    b.HasIndex("MarketProductStockModelId");
 
                     b.ToTable("Products");
                 });
@@ -470,26 +473,11 @@ namespace MarketOrderFlow.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MarketOrderFlow.Infrastructure.Models.MarketProductStockModel", null)
+                        .WithMany("Markets")
+                        .HasForeignKey("MarketProductStockModelId");
+
                     b.Navigation("LogisticsCenter");
-                });
-
-            modelBuilder.Entity("MarketOrderFlow.Infrastructure.Models.MarketProductStockModel", b =>
-                {
-                    b.HasOne("MarketOrderFlow.Infrastructure.Models.MarketModel", "Market")
-                        .WithMany()
-                        .HasForeignKey("MarketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MarketOrderFlow.Infrastructure.Models.ProductModel", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Market");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("MarketOrderFlow.Infrastructure.Models.OrderModel", b =>
@@ -510,6 +498,10 @@ namespace MarketOrderFlow.Infrastructure.Migrations
                         .HasForeignKey("LogisticsCenterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("MarketOrderFlow.Infrastructure.Models.MarketProductStockModel", null)
+                        .WithMany("Products")
+                        .HasForeignKey("MarketProductStockModelId");
 
                     b.Navigation("LogisticsCenter");
                 });
@@ -582,6 +574,13 @@ namespace MarketOrderFlow.Infrastructure.Migrations
 
             modelBuilder.Entity("MarketOrderFlow.Infrastructure.Models.LogisticsCenterModel", b =>
                 {
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("MarketOrderFlow.Infrastructure.Models.MarketProductStockModel", b =>
+                {
+                    b.Navigation("Markets");
+
                     b.Navigation("Products");
                 });
 #pragma warning restore 612, 618

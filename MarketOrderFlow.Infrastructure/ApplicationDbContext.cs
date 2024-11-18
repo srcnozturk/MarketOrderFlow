@@ -8,13 +8,21 @@ public class ApplicationDbContext : IdentityDbContext<UserModel>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-    public DbSet<MarketModel> Markets { get; set; }
-    public DbSet<LogisticsCenterModel> LogisticsCenters { get; set; }
-    public DbSet<ProductModel> Products { get; set; }
-    public DbSet<OrderModel> Orders { get; set; }
-    public DbSet<OrderItemModel> OrderItems { get; set; }
+    public DbSet<MarketModel> Markets => Set<MarketModel>();
+    public DbSet<LogisticsCenterModel> LogisticsCenters => Set<LogisticsCenterModel>();
+    public DbSet<ProductModel> Products => Set<ProductModel>();
+    public DbSet<OrderModel> Orders => Set<OrderModel>();
+    public DbSet<MarketProductStockModel> MarketProductStocks => Set<MarketProductStockModel>();
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<ProductModel>()
+           .HasMany(e => e.Orders)
+           .WithMany(e => e.Products)
+           .UsingEntity("ProductToOrder");
 
+    }
     public async Task<Result> SaveEntitiesAsync(CancellationToken cancellationToken = default)
     {
         try

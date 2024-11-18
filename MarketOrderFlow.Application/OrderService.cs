@@ -9,24 +9,25 @@ public class OrderService(ApplicationDbContext db) : IOrderService
 {
     public async Task<Result> GenerateDailyOrders()
     {
-        List<MarketModel> markets = await db.Markets.Include(m => m.LogisticsCenter).ToListAsync();
-        List<ProductModel> products = await db.Products.ToListAsync();
+        var markets = await db.Markets.Include(m => m.LogisticsCenter).ToListAsync();
+        var products = await db.Products.ToListAsync();
 
         foreach (var market in markets)
         {
-            var logisticProducts = products.Where(p => p.LogisticsCenter.Id == market.LogisticsCenter.Id);
+            var logisticProducts = products.Where(p => p.LogisticsCenter.Id == market.LogisticsCenter.Id).ToList();
+
             foreach (var product in logisticProducts)
             {
                 var suggestedQuantity = Random.Shared.Next(11, 100); // 10'dan büyük rastgele sayı
-                var orderModel=new OrderModel { Market=market,Products=products,SuggestedQuantity=suggestedQuantity};
-                // Doğru nesnelerle Order oluştur
-                //var order = Order.Create(marketDomain, productDomain, suggestedQuantity);
+                var orderModel = new OrderModel
+                {
+                    Market = market,
+                    Products = new List<ProductModel> { product },
+                    SuggestedQuantity = suggestedQuantity,
+                    OrderDate = DateTime.Now,
+                };
 
-                // Order nesnesini OrderModel'e dönüştür
-                //var orderModel = order.Adapt<OrderModel>();
-
-                // Veritabanına ekle
-                await db.Orders.AddAsync(orderModel);
+                await db.Orders.AddRangeAsync(orderModel);
             }
         }
         return await db.SaveEntitiesAsync();
