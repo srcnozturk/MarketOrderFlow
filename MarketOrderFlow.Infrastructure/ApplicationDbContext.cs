@@ -13,6 +13,7 @@ public class ApplicationDbContext : IdentityDbContext<UserModel>
     public DbSet<ProductModel> Products => Set<ProductModel>();
     public DbSet<OrderModel> Orders => Set<OrderModel>();
     public DbSet<MarketProductStockModel> MarketProductStocks => Set<MarketProductStockModel>();
+    public DbSet<ConfirmedOrderModel> ConfirmedOrders => Set<ConfirmedOrderModel>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -22,6 +23,15 @@ public class ApplicationDbContext : IdentityDbContext<UserModel>
            .WithMany(e => e.Products)
            .UsingEntity("ProductToOrder");
 
+        modelBuilder.Entity<ConfirmedOrderModel>()
+        .HasOne(co => co.Market)
+        .WithMany()
+        .HasForeignKey(co => co.MarketId);
+
+        modelBuilder.Entity<ConfirmedOrderModel>()
+            .HasOne(co => co.Product)
+            .WithMany()
+            .HasForeignKey(co => co.ProductId);
     }
     public async Task<Result> SaveEntitiesAsync(CancellationToken cancellationToken = default)
     {
