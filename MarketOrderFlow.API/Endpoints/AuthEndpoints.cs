@@ -4,14 +4,15 @@ static class AuthEndpoints
 {
     public static RouteGroupBuilder MapAuthApi(this RouteGroupBuilder group)
     {
-        group.MapGet("/roles", GetRoles);
-        group.MapPost("/user", AddNewUser);
-        group.MapPost("/roles", AddNewRole);
+        group.MapGet("/roles", ListRoles).RequireAuthorization("Admin");
+        group.MapPost("/user", AddNewUser).RequireAuthorization("Admin");
+        group.MapPost("/roles", AddNewRole).RequireAuthorization("Admin");
         group.MapPost("/login", UserLogin);
-        group.MapGet("/users", GetAllUsers);
+        group.MapGet("/users", ListUsers).RequireAuthorization("ManagerOrAdmin");
+        group.MapPut("/users/{userId:guid}/role", UpdateUserRole).RequireAuthorization("Admin");
         return group;
     }
-    static async Task<Results<Ok<UserModel[]>, ProblemHttpResult>> GetAllUsers(
+    static async Task<Results<Ok<UserModel[]>, ProblemHttpResult>> ListUsers(
          UserManager<UserModel> userManager)
     {
         try
@@ -31,7 +32,28 @@ static class AuthEndpoints
             return TypedResults.Ok(new UserModel[0]);
         }
     }
-    static async Task<Results<Ok<RoleModel[]>, ProblemHttpResult>> GetRoles(
+    static async Task<Results<Ok, ProblemHttpResult>> UpdateUserRole(
+        Guid userId, [FromBody] RoleModel role, UserManager<UserModel> userManager)
+    {
+        try
+        {
+            var user = await userManager.FindByIdAsync(userId.ToString());
+
+            IdentityResult removeRolesResult = await userManager.RemoveFromRolesAsync(user, await userManager.GetRolesAsync(user));
+            if (!removeRolesResult.Succeeded) return TypedResults.Problem(statusCode: 400, detail: removeRolesResult.GetErrors());
+
+            IdentityResult addRolesResult = await userManager.AddToRoleAsync(user, role.Name);
+            if (!addRolesResult.Succeeded) return TypedResults.Problem(statusCode: 400, detail: addRolesResult.GetErrors());
+
+            return TypedResults.Ok();
+        }
+        catch (Exception e)
+        {
+            var details = new ProblemDetails { Status = 400, Detail = e.Message, };
+            return TypedResults.Problem(details);
+        }
+    }
+    static async Task<Results<Ok<RoleModel[]>, ProblemHttpResult>> ListRoles(
        RoleManager<IdentityRole> roleManager)
     {
         try
@@ -90,7 +112,7 @@ static class AuthEndpoints
             var createdUser = await userManager.FindByIdAsync(newUserCommand.Id);
             Guid userId = Guid.Parse(createdUser.Id);
 
-            var addrole = AddRolesToUserByUserId(userId, newUserCommand.Role, userManager);
+            var addrole = AddRoleToUserByUserId(userId, newUserCommand.Role, userManager);
             var createdUri = $"{context.Request.GetEncodedUrl()}/{newUserCommand.Id}";
 
             return TypedResults.Created(createdUri);
@@ -103,7 +125,7 @@ static class AuthEndpoints
         }
     }
 
-    static async Task<Results<Ok, ProblemHttpResult>> AddRolesToUserByUserId(
+    static async Task<Results<Ok, ProblemHttpResult>> AddRoleToUserByUserId(
         Guid userId, [FromBody] RoleModel role, UserManager<UserModel> userManager)
     {
         try

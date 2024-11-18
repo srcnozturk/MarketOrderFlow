@@ -4,6 +4,7 @@ using MarketOrderFlow.API.Endpoints;
 using MarketOrderFlow.Application;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using System.Text.Json.Serialization;
 
 static class Program
@@ -23,6 +24,7 @@ static class Program
                 service => service.GenerateDailyOrders(), // Çalýþtýrýlacak metot
                 Cron.Daily);                      // Her gün çalýþacak þekilde zamanla
         });
+        
         app.UseHangfireDashboard("/hangfire");
         app.Run();
     }
@@ -44,7 +46,7 @@ static class Program
         builder.Services.AddAPIServices();
 
         var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
-
+        builder.Services.AddAuthorization(ConfigureAuthorizationOptions);
         // Hangfire'ý Redis ile kaydet
         builder.Services.AddHangfireWithRedis(redisConnectionString);
 
@@ -53,7 +55,7 @@ static class Program
     {
         IConfiguration? configuration = serviceProvider.GetService<IConfiguration>() ?? throw new ApplicationException();
         options.UseSqlServer(configuration.GetConnectionString("MarketOrderFlow-DB"));
-        options.LogTo(Console.WriteLine, LogLevel.Information); //TODO release modunda loglamayý yapmamalý
+        options.LogTo(Console.WriteLine, LogLevel.Information);
         options.EnableSensitiveDataLogging();
     }
 
@@ -118,6 +120,14 @@ static class Program
         app.MapGroup("/product").MapProduct().WithTags("Product Management API");
         app.MapGroup("/order").MapOrder().WithTags("Order Management API");
     }
+    private static void ConfigureAuthorizationOptions(AuthorizationOptions o)
+    {
+        o.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+        o.AddPolicy("User", policy => policy.RequireRole("User"));
+        o.AddPolicy("ManagerOrAdmin", policy => policy.RequireRole("Manager","Admin"));
+        o.AddPolicy("AllRoles", policy => policy.RequireRole("User", "Manager", "Admin"));
+    }
+
     private static void ConfigureJSONOptions(Microsoft.AspNetCore.Http.Json.JsonOptions o) =>
        o.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 }

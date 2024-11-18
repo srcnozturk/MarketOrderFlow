@@ -1,5 +1,4 @@
 ﻿using MarketOrderFlow.API.Features.Markets.Commands;
-using MarketOrderFlow.API.Features.Markets.Handlers;
 using MarketOrderFlow.API.Features.Markets.Queries;
 
 namespace MarketOrderFlow.API.Endpoints;
@@ -8,10 +7,10 @@ static class MarketEndpoints
 {
     public static RouteGroupBuilder MapMarket(this RouteGroupBuilder group)
     {
-        group.MapPost("/", AddMarket);
-        group.MapPost("/addProductToMarket", AddProductToMarket);
-        group.MapGet("/", ListMarkets);
-        group.MapGet("/listProductToMarkets", ListProductToMarkets);
+        group.MapPost("/", AddMarket).RequireAuthorization("ManagerOrAdmin");
+        group.MapPost("/addProductToMarket", AddProductToMarket).RequireAuthorization("ManagerOrAdmin");
+        group.MapGet("/", ListMarkets).RequireAuthorization("AllRoles");
+        group.MapGet("/listProductToMarkets", ListProductToMarkets).RequireAuthorization("AllRoles");
         return group;
     }
     internal async static Task<Results<Created, ProblemHttpResult>> AddMarket(

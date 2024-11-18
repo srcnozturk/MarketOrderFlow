@@ -7,9 +7,9 @@ static class OrderEndpoints
 {
     public static RouteGroupBuilder MapOrder(this RouteGroupBuilder group)
     {
-        group.MapPost("/", OrderDaily);
-        group.MapPost("/approveOrder", ApproveOrder);
-        group.MapDelete("/{GlobalId}", RemoveOrder);
+        group.MapPost("/", OrderDaily).RequireAuthorization("Manager");
+        group.MapPost("/approveOrder", ApproveOrder).RequireAuthorization("Manager");
+        group.MapDelete("/{GlobalId}", RemoveOrder).RequireAuthorization("Manager"); 
         return group;
     }
     internal static async Task<Results<Created, ProblemHttpResult>> OrderDaily(IOrderService orderService)

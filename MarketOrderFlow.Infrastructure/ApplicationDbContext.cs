@@ -33,7 +33,15 @@ public class ApplicationDbContext : IdentityDbContext<UserModel>
             .WithMany()
             .HasForeignKey(co => co.ProductId);
     }
-    public async Task<Result> SaveEntitiesAsync(CancellationToken cancellationToken = default)
+
+    private static void SeedData(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<RoleModel>().HasData(new { Id = 1, Name = "User" });
+        modelBuilder.Entity<RoleModel>().HasData(new { Id = 2, Name = "Manager"});
+        modelBuilder.Entity<UserModel>().HasData(new { Id = 1, Name = "Sercan"});
+
+    }
+        public async Task<Result> SaveEntitiesAsync(CancellationToken cancellationToken = default)
     {
         try
         {
