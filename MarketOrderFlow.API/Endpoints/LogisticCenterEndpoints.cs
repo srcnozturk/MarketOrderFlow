@@ -8,7 +8,7 @@ static class LogisticCenterEndpoints
     public static RouteGroupBuilder MapLogisticCenter(this RouteGroupBuilder group)
     {
         group.MapPost("/", AddLogisticCenter).RequireAuthorization("Admin");
-        group.MapGet("/", ListLogisticCenter).RequireAuthorization("AllRoles");
+        group.MapGet("/", ListLogisticCenter)/*.RequireAuthorization("AllRoles")*/;
         return group;
     }
     internal async static Task<Results<Created, ProblemHttpResult>> AddLogisticCenter(

@@ -3,13 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketOrderFlow.API", "MarketOrderFlow.API\MarketOrderFlow.API.csproj", "{14D95214-524F-47D7-A8A0-7A0C31B9A1FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketOrderFlow.API", "MarketOrderFlow.API\MarketOrderFlow.API.csproj", "{14D95214-524F-47D7-A8A0-7A0C31B9A1FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketOrderFlow.Domain", "MarketOrderFlow.Domain\MarketOrderFlow.Domain.csproj", "{4D2C504F-C6AC-43AC-9D79-1839E0C97C12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketOrderFlow.Domain", "MarketOrderFlow.Domain\MarketOrderFlow.Domain.csproj", "{4D2C504F-C6AC-43AC-9D79-1839E0C97C12}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketOrderFlow.Infrastructure", "MarketOrderFlow.Infrastructure\MarketOrderFlow.Infrastructure.csproj", "{C8BCA112-A50F-4AF3-87C5-C4A715EE4936}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketOrderFlow.Infrastructure", "MarketOrderFlow.Infrastructure\MarketOrderFlow.Infrastructure.csproj", "{C8BCA112-A50F-4AF3-87C5-C4A715EE4936}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketOrderFlow.Application", "MarketOrderFlow.Application\MarketOrderFlow.Application.csproj", "{08306BF8-4C92-40E5-BCF1-44958FE6A595}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketOrderFlow.Application", "MarketOrderFlow.Application\MarketOrderFlow.Application.csproj", "{08306BF8-4C92-40E5-BCF1-44958FE6A595}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8DF03F94-5893-4981-AC32-4228CACE17B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketOrderFlow.Api.Tests", "Tests\MarketOrderFlow.Api.Tests\MarketOrderFlow.Api.Tests.csproj", "{9BFAC517-76CB-4F64-B8F5-C55E9A5A3306}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,9 +37,16 @@ Global
 		{08306BF8-4C92-40E5-BCF1-44958FE6A595}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08306BF8-4C92-40E5-BCF1-44958FE6A595}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08306BF8-4C92-40E5-BCF1-44958FE6A595}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BFAC517-76CB-4F64-B8F5-C55E9A5A3306}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BFAC517-76CB-4F64-B8F5-C55E9A5A3306}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BFAC517-76CB-4F64-B8F5-C55E9A5A3306}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BFAC517-76CB-4F64-B8F5-C55E9A5A3306}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9BFAC517-76CB-4F64-B8F5-C55E9A5A3306} = {8DF03F94-5893-4981-AC32-4228CACE17B5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D6002AA8-4E75-4738-8635-2B5027AED14C}

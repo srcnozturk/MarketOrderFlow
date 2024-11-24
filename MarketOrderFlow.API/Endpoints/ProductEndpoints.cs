@@ -3,7 +3,7 @@ using MarketOrderFlow.API.Features.Products.Queries;
 
 namespace MarketOrderFlow.API.Endpoints;
 
-static class ProductEndpoints
+public static class ProductEndpoints
 {
     public static RouteGroupBuilder MapProduct(this RouteGroupBuilder group)
     {
@@ -11,7 +11,7 @@ static class ProductEndpoints
         group.MapGet("/", ListProducts).RequireAuthorization("AllRoles");
         return group;
     }
-    internal async static Task<Results<Created, ProblemHttpResult>> AddProduct(
+    public async static Task<Results<Created, ProblemHttpResult>> AddProduct(
         [FromBody] CreateProductCommand cmd, IMediator mediator)
     {
         try
@@ -29,7 +29,7 @@ static class ProductEndpoints
             return TypedResults.Problem(details);
         }
     }
-    internal static async Task<IResult> ListProducts(
+    public static async Task<IResult> ListProducts(
      IMediator mediator)
     {
         try

@@ -6,9 +6,9 @@ using MarketOrderFlow.Domain.Concracts;
 
 namespace MarketOrderFlow.API;
 
-static class ServiceRegistrations
+public static class ServiceRegistrations
 {
-    internal static IServiceCollection AddAPIServices(
+    public static IServiceCollection AddAPIServices(
         this IServiceCollection services)
     {
         services.AddMapsters();

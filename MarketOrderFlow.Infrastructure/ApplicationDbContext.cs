@@ -6,6 +6,7 @@ namespace MarketOrderFlow.Infrastructure;
 
 public class ApplicationDbContext : IdentityDbContext<UserModel>
 {
+    public ApplicationDbContext() { }
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
     public DbSet<MarketModel> Markets => Set<MarketModel>();
@@ -27,21 +28,20 @@ public class ApplicationDbContext : IdentityDbContext<UserModel>
         .HasOne(co => co.Market)
         .WithMany()
         .HasForeignKey(co => co.MarketId);
-
+       
         modelBuilder.Entity<ConfirmedOrderModel>()
             .HasOne(co => co.Product)
             .WithMany()
             .HasForeignKey(co => co.ProductId);
+        SeedData(modelBuilder);
     }
 
     private static void SeedData(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<RoleModel>().HasData(new { Id = 1, Name = "User" });
-        modelBuilder.Entity<RoleModel>().HasData(new { Id = 2, Name = "Manager"});
-        modelBuilder.Entity<UserModel>().HasData(new { Id = 1, Name = "Sercan"});
-
+        modelBuilder.Entity<RoleModel>().HasData(new { Id = 2, Name = "Manager" });
     }
-        public async Task<Result> SaveEntitiesAsync(CancellationToken cancellationToken = default)
+    public async Task<Result> SaveEntitiesAsync(CancellationToken cancellationToken = default)
     {
         try
         {
