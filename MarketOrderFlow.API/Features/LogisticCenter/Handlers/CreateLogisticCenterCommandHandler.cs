@@ -1,6 +1,4 @@
-﻿using Mapster;
-
-namespace MarketOrderFlow.API.Features.LogisticCenter.Commands;
+﻿namespace MarketOrderFlow.API.Features.LogisticCenter.Commands;
 
 public class CreateLogisticCenterCommandHandler(ApplicationDbContext db) 
     : IRequestHandler<CreateLogisticCenterCommand, Result>

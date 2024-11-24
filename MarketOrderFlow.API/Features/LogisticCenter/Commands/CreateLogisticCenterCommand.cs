@@ -1,3 +1,5 @@
-﻿namespace MarketOrderFlow.API.Features.LogisticCenter.Commands;
+﻿using Cqrs.Commands;
+
+namespace MarketOrderFlow.API.Features.LogisticCenter.Commands;
 
 public  readonly record struct  CreateLogisticCenterCommand(string Name,Guid? GlobalId) : IRequest<Result>;

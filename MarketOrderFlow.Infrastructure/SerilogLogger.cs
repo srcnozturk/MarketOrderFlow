@@ -2,7 +2,7 @@
 using Serilog;
 using ILogger = Serilog.ILogger;
 
-namespace MarketOrderFlow.Application;
+namespace MarketOrderFlow.Infrastructure;
 
 public class SerilogLogger<T> : IAppLogger<T>
 {
